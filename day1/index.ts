@@ -6,17 +6,42 @@ const rawData = readFileSync(filename, "utf8");
 
 const data = rawData.split("\n") as string[];
 
+const digits = [
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+];
+
 const answer = data.reduce((acc, cur) => {
   let first = 0;
   for (let i = 0; i < cur.length; i++) {
     const char = cur.at(i);
     if (char) {
       const found = parseInt(char);
-      console.log(found);
       if (!isNaN(found)) {
-        console.log("found!");
         first = found;
         break;
+      } else {
+        let found = 0;
+        if (
+          digits.some((value, index) => {
+            const substr = cur.substring(i, i + value.length);
+            if (substr === value) {
+              found = index + 1;
+              return true;
+            }
+            return false;
+          })
+        ) {
+          first = found;
+          break;
+        }
       }
     }
   }
@@ -28,6 +53,21 @@ const answer = data.reduce((acc, cur) => {
       if (!isNaN(found)) {
         second = found;
         break;
+      } else {
+        let found = 0;
+        if (
+          digits.some((value, index) => {
+            const substr = cur.substring(i - value.length + 1, i + 1);
+            if (substr === value) {
+              found = index + 1;
+              return true;
+            }
+            return false;
+          })
+        ) {
+          second = found;
+          break;
+        }
       }
     }
   }
