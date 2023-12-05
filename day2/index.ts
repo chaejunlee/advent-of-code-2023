@@ -39,4 +39,28 @@ const answer = data.reduce((acc, cur, index) => {
   return acc + index + 1;
 }, 0);
 
-console.log(answer);
+const part2Answer = data.reduce((acc, cur, index) => {
+  const splitData = cur.split(/[:;]/);
+  const [_, ...games] = [...splitData];
+
+  let possibleBalls = {
+    red: 0,
+    blue: 0,
+    green: 0,
+  };
+
+  for (let game of games) {
+    const balls = game.split(",");
+
+    for (let ball of balls) {
+      const [num, color] = ball.trim().split(" ");
+      if (color && num && possibleBalls[color as Color] < parseInt(num)) {
+        possibleBalls[color as Color] = parseInt(num);
+      }
+    }
+  }
+
+  return acc + Object.values(possibleBalls).reduce((acc, cur) => cur * acc);
+}, 0);
+
+console.log(part2Answer);
