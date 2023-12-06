@@ -1,4 +1,3 @@
-import { sign } from "crypto";
 import { readFileSync } from "fs";
 import { cwd } from "process";
 
@@ -38,12 +37,7 @@ for (let y = 0; y < data.length; y++) {
         const d_row = d[0]! + y;
         const d_col = d[1]! + x;
 
-        if (
-          d_row >= 0 &&
-          d_row < data.length &&
-          d_col >= 0 &&
-          d_col < data[0]!.length
-        ) {
+        if (data[d_row] && data[d_row]![d_col]) {
           const char = data[d_row]![d_col]!;
           if (!isNumber(char) && char !== ".") {
             // console.log(char, match[0]);
@@ -57,6 +51,7 @@ for (let y = 0; y < data.length; y++) {
     }
   }
 }
+console.log(answer);
 
 let answer2 = 0;
 
@@ -103,12 +98,7 @@ for (let y = 0; y < signArray.length; y++) {
           const d_y = d[0]! + y;
           const d_x = d[1]! + sign.x;
 
-          if (
-            d_y >= 0 &&
-            d_y < data.length &&
-            d_x >= 0 &&
-            d_x < data[0]!.length
-          ) {
+          if (numberArray[d_y]) {
             const numbers = numberArray[d_y];
             if (numbers) {
               for (const num of numbers) {
