@@ -12,7 +12,8 @@ const cardMap = {
   A: 1,
   K: 2,
   Q: 3,
-  J: 4,
+  // changed value of J
+  J: 15,
   T: 5,
   "9": 6,
   "8": 7,
@@ -62,6 +63,31 @@ function part1() {
         set[a]++;
       }
     }
+
+    // added for part 2
+    // just mutated set to remove key J
+    if (set["J"] !== undefined) {
+      const highestA: [string, number][] = Object.entries(set)
+        .filter((v) => v[0] !== "J")
+        .sort((a, b) => {
+          const bb = b[1] as number;
+          const aa = a[1] as number;
+          if (bb === aa) {
+            return (
+              cardMap[b[0] as keyof typeof cardMap] -
+              cardMap[a[0] as keyof typeof cardMap]
+            );
+          }
+          return bb - aa;
+        }) as [string, number][];
+      if (highestA.length === 0) {
+        highestA.push(["A", 0]);
+      }
+      set[highestA[0]![0]! as keyof typeof cardMap] += set["J"];
+      delete set["J"];
+    }
+    // until here
+
     if (Object.keys(set).length === 1) {
       return 1;
     }
@@ -83,7 +109,7 @@ function part1() {
   }
 
   let answer = 0;
-  console.log(game);
+  console.log(game.filter((v) => v.hand.includes("J")));
   for (let i = 0; i < game.length; i++) {
     answer += parseInt(game?.[i]?.bid ?? "0") * (i + 1);
   }
