@@ -15,11 +15,14 @@ function main() {
     .filter((v) => v)
     .map((v) => parseInt(v))!;
 
+  const newTimes = parseInt(times.map((v) => String(v)).join(""));
+
   const distances = data[1]
     ?.split(":")[1]
     ?.split(" ")
     .filter((v) => v)
     .map((v) => parseInt(v))!;
+  const newDistance = parseInt(distances.map((v) => String(v)).join(""));
 
   let totalWinsMultiplied = 1;
 
@@ -51,4 +54,37 @@ function main() {
   return totalWinsMultiplied;
 }
 
+function part2() {
+  const times = data[0]
+    ?.split(":")[1]
+    ?.split(" ")
+    .filter((v) => v)
+    .map((v) => parseInt(v))!;
+
+  const newTime = parseInt(times.map((v) => String(v)).join(""));
+
+  const distances = data[1]
+    ?.split(":")[1]
+    ?.split(" ")
+    .filter((v) => v)
+    .map((v) => parseInt(v))!;
+  const newDistance = parseInt(distances.map((v) => String(v)).join(""));
+
+  let totalWins = 0;
+
+  for (let i = 0; i < newTime; i++) {
+    if (didWin(newDistance, i, newTime)) totalWins++;
+  }
+
+  function didWin(dist: number, readyTime: number, totalTime: number): boolean {
+    const timeLeft = totalTime - readyTime;
+    const speed = readyTime;
+    const traveled = speed * timeLeft;
+    return traveled > dist;
+  }
+
+  return totalWins;
+}
+
 console.log(main());
+console.log(part2());
