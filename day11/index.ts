@@ -52,7 +52,7 @@ console.log(blankRow, blankCol);
 for (const r of blankRow) {
     for (const galaxy of galaxies) {
         if (galaxy.y >= r) {
-            galaxy.y += 1;
+            galaxy.y += 999999;
         }
     }
 }
@@ -60,7 +60,7 @@ for (const r of blankRow) {
 for (const c of blankCol) {
     for (const galaxy of galaxies) {
         if (galaxy.x >= c) {
-            galaxy.x += 1;
+            galaxy.x += 999999;
         }
     }
 }
@@ -77,4 +77,5 @@ for (let i = 0; i < galaxies.length; i++) {
     }
 }
 
-console.log("part1: ", totalDistance);
+console.log("part2: ", totalDistance);
+
