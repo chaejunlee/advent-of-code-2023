@@ -34,3 +34,29 @@ function findHistory(report: number[]): number {
 }
 
 console.log(answerArray.reduce((acc, cur) => acc + cur, 0));
+
+const part2 = data.map((report) => {
+  const reportArr = report.split(" ").map(v => parseInt(v));
+
+  return findFirst(reportArr);
+})
+
+function findFirst(report: number[]): number {
+  const sum = report.every(v => v === 0);
+  if (sum) return 0;
+
+  let diffs = [];
+  let diff = 0;
+  for (let i = 0; i < report.length - 1; i++) {
+    diff = report[i + 1]! - report[i]!;
+    diffs.push(diff);
+  }
+
+  const numberToAdd = findFirst(diffs);
+
+  const firstNumber = report.at(0)! - numberToAdd;
+
+  return firstNumber;
+}
+
+console.log(part2.reduce((acc, cur) => acc + cur, 0));
