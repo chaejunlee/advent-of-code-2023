@@ -65,8 +65,6 @@ for (const c of blankCol) {
     }
 }
 
-console.log(galaxies);
-
 let totalDistance = 0;
 for (let i = 0; i < galaxies.length; i++) {
     for (let j = i + 1; j < galaxies.length; j++) {
