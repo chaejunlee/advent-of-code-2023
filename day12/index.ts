@@ -6,68 +6,82 @@ const filename = currentDirectory + "/input.txt";
 
 const rawData = readFileSync(filename, "utf8");
 
-const data = rawData.split("\n").filter(v => v) as string[];
+const data = rawData.split("\n").filter((v) => v) as string[];
 
-const part1 = data.map(v => {
-    const [condition, group] = v.split(" ") as [string, string];
+const part2 = data.map((v) => {
+	const [condStr, groupStr] = v.split(" ") as [string, string];
 
-    return arrangements(condition, group);
-})
+	const unfoldedCond = Array(5).fill(condStr).join("?");
+	const unfoldedGroup = Array(5).fill(groupStr).join(",");
 
-function arrangements(condition: string, groupStr: string): number {
-    const group = groupStr.split(",").filter(v => v).map(v => parseInt(v));
+	const group = unfoldedGroup.split(",").map((v) => parseInt(v));
 
-    let count = 0;
-    let full = true;
+	const cache = Array.from({ length: unfoldedCond.length }, () => {
+		return new Array(group.length).fill("-1").map((v) => parseInt(v));
+	});
 
-    const groupNum = group.reduce((a, c) => a + c, 0);
-    const condNum = condition.split("").filter(v => v === "#" || v === "?").reduce((a, _) => a + 1, 0);
+	const ans = arrangement(0, 0);
 
-    if (condNum < groupNum) return 0;
+	console.log(unfoldedCond, unfoldedGroup, ans);
+	//console.table(cache);
 
-    for (let i = 0; i < condition.length; i++) {
-        if (condition[i] === "?") {
-            full = false;
-            const operational = condition.slice(0, i) + "." + condition.slice(i + 1);
-            count += arrangements(operational, groupStr);
+	return ans;
 
-            const damaged = condition.slice(0, i) + "#" + condition.slice(i + 1);
-            count += arrangements(damaged, groupStr);
+	function arrangement(cidx: number, gidx: number): number {
+		if (cidx >= unfoldedCond.length) {
+			return gidx === group.length ? 1 : 0;
+		}
+		if (gidx === group.length) {
+			const rest = unfoldedCond.slice(cidx).split("");
+			return rest.every((v) => v !== "#") ? 1 : 0;
+		}
 
-            break;
-        }
-    }
+		let count = 0;
 
-    if (full) {
-        const conditions = condition.split(".").filter(v => v).map(v => v.length);
-        if (group.length != conditions.length) return 0;
-        for (let i = 0; i < group.length; i++) {
-            if (group[i] != conditions[i]) return 0;
-        }
-        return 1;
-    }
+		const c = cache[cidx]![gidx]!;
+		if (c !== -1) return c;
 
-    return count;
-}
+		const thisGroup = group[gidx]!;
+		if (canFit(cidx, thisGroup)) {
+			count += arrangement(cidx + group[gidx]! + 1, gidx + 1);
+		}
+		if (!shouldFit(cidx, thisGroup)) {
+			count += arrangement(cidx + 1, gidx);
+		}
 
-console.log(part1.reduce((acc, cur) => acc + cur, 0));
+		cache[cidx]![gidx] = count;
 
-const part2 = data.map(v => {
-    const [cond, group] = v.split(" ") as [string, string];
+		return count;
+	}
 
-    let groupArr = [];
-    let condArr = [];
+	function canFit(cidx: number, thisGroup: number): boolean {
+		if (cidx + thisGroup > unfoldedCond.length) return false;
 
-    for (let i = 0; i < 5; i++) {
-        groupArr.push(group);
-        condArr.push(cond);
-    }
+		const fit = unfoldedCond
+			.slice(cidx, cidx + thisGroup)
+			.split("")
+			.every((v) => v !== ".");
 
-    let unfoldedGroup = groupArr.join(",");
-    let unfoldedCond = condArr.join("?");
-    console.log(unfoldedCond, unfoldedGroup);
+		if (!fit) return false;
 
-    return arrangements(unfoldedCond, unfoldedGroup);
-})
-console.log(part2.reduce((a, c) => a + c, 0))
+		const before = unfoldedCond[cidx - 1];
 
+		if (typeof before !== "undefined" && before === "#") return false;
+
+		const after = unfoldedCond[cidx + thisGroup];
+
+		return after !== "#" ? true : false;
+	}
+
+	function shouldFit(cidx: number, thisGroup: number): boolean {
+		if (cidx + thisGroup > unfoldedCond.length) return false;
+
+		const fit = unfoldedCond
+			.slice(cidx, cidx + thisGroup)
+			.split("")
+
+		return fit[0] === "#";
+	}
+});
+
+console.log(part2.reduce((a, c) => a + c));
